@@ -59,19 +59,18 @@ export default function CreatePost() {
 
     setPosts(json.data);
   };
-  useEffect(() => {
-    fetchPost();
-  }, []);
+  // useEffect(() => {
+  //   fetchPost();
+  // }, []);
 
 
-  useEffect(() => {
+  const subscribeToChanges = () => {
     const channel = supabase
-      .channel('public:posts')
+    .channel('public:posts')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'posts' },
         (payload) => {
-          console.log('Realtime event:', payload);
 
           setPosts((currentPosts) => {
             const newPost = payload.new as Post;
@@ -96,13 +95,40 @@ export default function CreatePost() {
         console.warn('📡 Supabase channel closed. Reconnecting...');
         // optionally recreate the channel here
       })
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('📡 Realtime channel connected');
+        } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          console.log('📡 Realtime channel',status);
+          console.warn('⚠️ Realtime channel error, reconnecting...');
+          setTimeout(() => subscribeToChanges(), 2000); // retry
+        }
+      });
+
+    return channel;
+  };
+
+
+  useEffect(() => {
+   
+    let channel = subscribeToChanges();
+    fetchPost()
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('🔄 Tab activated — refreshing connection');
+        supabase.removeChannel(channel);
+        channel = subscribeToChanges();
+        fetchPost(); // also refresh posts
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
 
     return () => {
       supabase.removeChannel(channel);
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
-
-  },[supabase])
+  }, []);
   return (
     <div>
       <h2>Create a Post</h2>
