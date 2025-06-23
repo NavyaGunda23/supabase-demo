@@ -8,11 +8,6 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // let webhookData = { record: { email: "test12@gmail.com" } };
 
-const posts = [
-  { id: 1, name: "First post", description: "Hello world" },
-  { id: 2, name: "Second post", description: "More content here" },
-];
-
 
 export async function GET() {
   const { data: posts, error } = await supabase

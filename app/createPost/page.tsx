@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { NextResponse } from 'next/server';
+
 import { createClient } from '@supabase/supabase-js';
 type Post = {
   id: string;
@@ -38,7 +38,7 @@ export default function CreatePost() {
 
 
 
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   const fetchPost = async () => {
     const res = await fetch('/api/posts', {
@@ -106,7 +106,7 @@ export default function CreatePost() {
       supabase.removeChannel(channel);
     };
 
-  },[])
+  },[supabase])
   return (
     <div>
       <h2>Create a Post</h2>
