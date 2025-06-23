@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 let data = { record: { email: "test12@gmail.com" } };
 
-export async function GET(request:Request) {
+export async function GET() {
   return NextResponse.json({
     status: 200,
     data,
