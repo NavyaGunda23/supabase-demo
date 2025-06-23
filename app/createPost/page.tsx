@@ -99,7 +99,8 @@ export default function CreatePost() {
         if (status === 'SUBSCRIBED') {
           console.log('📡 Realtime channel connected');
         } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-          console.log('📡 Realtime channel',status);
+          const date = new Date()
+          console.log('📡 Realtime channel',status,date );
           console.warn('⚠️ Realtime channel error, reconnecting...');
           setTimeout(() => subscribeToChanges(), 2000); // retry
         }
