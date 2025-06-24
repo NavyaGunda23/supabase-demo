@@ -11,7 +11,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function GET() {
   const { data: posts, error } = await supabase
-    .from('posts')
+    .from('voice_message')
     .select('*')
     .order('created_at', { ascending: false });
 
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   const { name, description } = body;
 
     const { data, error } = await supabase
-      .from('posts')
+      .from('voice_message')
       .insert([{ name, description }]);
 
     if (error) {
