@@ -25,6 +25,7 @@ export async function GET() {
   return NextResponse.json({ success: true, data: posts });
 }
 
+
 export async function POST(request: Request) {
   const body = await request.json();
   console.log("testing data",request)
